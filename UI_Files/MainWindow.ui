@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>673</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Procesamiento de Grafos</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../Trabajos Unal/Teoria de Señales/TKinter/unal.ico</normaloff>../../../Trabajos Unal/Teoria de Señales/TKinter/unal.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="MplWidget" name="MplWidget" native="true">
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>673</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHello">
+    <property name="title">
+     <string>Archivo</string>
+    </property>
+    <widget class="QMenu" name="menuNuevo_Grafo">
+     <property name="title">
+      <string>Nuevo Grafo</string>
+     </property>
+     <addaction name="actionPersonalizado"/>
+     <addaction name="actionAleatorio"/>
+    </widget>
+    <widget class="QMenu" name="menuExportar_Datos">
+     <property name="title">
+      <string>Exportar Datos</string>
+     </property>
+     <addaction name="actionExcel"/>
+     <addaction name="actionImagen"/>
+     <addaction name="actionPDF"/>
+    </widget>
+    <addaction name="menuNuevo_Grafo"/>
+    <addaction name="actionExport"/>
+    <addaction name="actionGuardar"/>
+    <addaction name="actionGuardar_Como"/>
+    <addaction name="menuExportar_Datos"/>
+    <addaction name="actionImportar_Datos"/>
+    <addaction name="actionInicio"/>
+    <addaction name="actionImprimir"/>
+    <addaction name="actionCerrar"/>
+   </widget>
+   <widget class="QMenu" name="menuModulator">
+    <property name="title">
+     <string>Editar</string>
+    </property>
+    <widget class="QMenu" name="menuNodo">
+     <property name="title">
+      <string>Nodo</string>
+     </property>
+     <addaction name="actionAgregar"/>
+     <addaction name="actionEditar"/>
+     <addaction name="actionEliminar"/>
+    </widget>
+    <widget class="QMenu" name="menuArco">
+     <property name="title">
+      <string>Arco</string>
+     </property>
+     <addaction name="actionAgregar_2"/>
+     <addaction name="actionEditar_2"/>
+     <addaction name="actionEliminar_2"/>
+    </widget>
+    <addaction name="actionRFD"/>
+    <addaction name="menuNodo"/>
+    <addaction name="menuArco"/>
+   </widget>
+   <widget class="QMenu" name="menuDemodulator">
+    <property name="title">
+     <string>Analizar</string>
+    </property>
+    <addaction name="actionA_1"/>
+    <addaction name="actionA_2"/>
+    <addaction name="actionA_3"/>
+    <addaction name="actionA_4"/>
+   </widget>
+   <widget class="QMenu" name="menuWGN">
+    <property name="title">
+     <string>Herramientas</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuAplicaci_n">
+    <property name="title">
+     <string>Aplicación</string>
+    </property>
+    <addaction name="actionAplicaci_n_1"/>
+    <addaction name="actionAplicaci_n_2"/>
+   </widget>
+   <widget class="QMenu" name="menuVentana">
+    <property name="title">
+     <string>Ventana</string>
+    </property>
+    <addaction name="actionGrafica"/>
+    <addaction name="actionTabla"/>
+   </widget>
+   <widget class="QMenu" name="menuAyuda">
+    <property name="title">
+     <string>Ayuda</string>
+    </property>
+    <addaction name="actionAyuda"/>
+    <addaction name="actionAcerca_de_Grafos"/>
+   </widget>
+   <addaction name="menuHello"/>
+   <addaction name="menuModulator"/>
+   <addaction name="menuDemodulator"/>
+   <addaction name="menuWGN"/>
+   <addaction name="menuAplicaci_n"/>
+   <addaction name="menuVentana"/>
+   <addaction name="menuAyuda"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExport">
+   <property name="text">
+    <string>Abrir</string>
+   </property>
+  </action>
+  <action name="actionRFD">
+   <property name="text">
+    <string>Deshacer</string>
+   </property>
+  </action>
+  <action name="actionAM">
+   <property name="text">
+    <string>AM</string>
+   </property>
+  </action>
+  <action name="actionFM">
+   <property name="text">
+    <string>FM</string>
+   </property>
+  </action>
+  <action name="actionA_1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Algoritmo 1</string>
+   </property>
+  </action>
+  <action name="actionA_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Algoritmo 2</string>
+   </property>
+  </action>
+  <action name="actionA_3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Algoritmo 3</string>
+   </property>
+  </action>
+  <action name="actionA_4">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Algoritmo 4</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>Ejecución</string>
+   </property>
+  </action>
+  <action name="actionManual">
+   <property name="text">
+    <string>Manual</string>
+   </property>
+  </action>
+  <action name="actionSin_60Hz">
+   <property name="text">
+    <string>Sin 60Hz</string>
+   </property>
+  </action>
+  <action name="actionPersonalizado">
+   <property name="text">
+    <string>Personalizado</string>
+   </property>
+  </action>
+  <action name="actionAleatorio">
+   <property name="text">
+    <string>Aleatorio</string>
+   </property>
+  </action>
+  <action name="actionGuardar">
+   <property name="text">
+    <string>Guardar</string>
+   </property>
+  </action>
+  <action name="actionGuardar_Como">
+   <property name="text">
+    <string>Guardar Como</string>
+   </property>
+  </action>
+  <action name="actionImportar_Datos">
+   <property name="text">
+    <string>Importar Datos</string>
+   </property>
+  </action>
+  <action name="actionExcel">
+   <property name="text">
+    <string>Excel</string>
+   </property>
+  </action>
+  <action name="actionImagen">
+   <property name="text">
+    <string>Imagen</string>
+   </property>
+  </action>
+  <action name="actionPDF">
+   <property name="text">
+    <string>PDF</string>
+   </property>
+  </action>
+  <action name="actionInicio">
+   <property name="text">
+    <string>Inicio</string>
+   </property>
+  </action>
+  <action name="actionImprimir">
+   <property name="text">
+    <string>Imprimir</string>
+   </property>
+  </action>
+  <action name="actionCerrar">
+   <property name="text">
+    <string>Cerrar</string>
+   </property>
+  </action>
+  <action name="actionAgregar">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionEditar">
+   <property name="text">
+    <string>Editar</string>
+   </property>
+  </action>
+  <action name="actionEliminar">
+   <property name="text">
+    <string>Eliminar</string>
+   </property>
+  </action>
+  <action name="actionAgregar_2">
+   <property name="text">
+    <string>Agregar</string>
+   </property>
+  </action>
+  <action name="actionEditar_2">
+   <property name="text">
+    <string>Editar</string>
+   </property>
+  </action>
+  <action name="actionEliminar_2">
+   <property name="text">
+    <string>Eliminar</string>
+   </property>
+  </action>
+  <action name="actionAplicaci_n_1">
+   <property name="text">
+    <string>Aplicación 1</string>
+   </property>
+  </action>
+  <action name="actionAplicaci_n_2">
+   <property name="text">
+    <string>Aplicación 2</string>
+   </property>
+  </action>
+  <action name="actionGrafica">
+   <property name="text">
+    <string>Grafica</string>
+   </property>
+  </action>
+  <action name="actionTabla">
+   <property name="text">
+    <string>Tabla</string>
+   </property>
+  </action>
+  <action name="actionAyuda">
+   <property name="text">
+    <string>Ayuda</string>
+   </property>
+  </action>
+  <action name="actionAcerca_de_Grafos">
+   <property name="text">
+    <string>Acerca de Grafos</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MplWidget</class>
+   <extends>QWidget</extends>
+   <header>Widgets/mplwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
