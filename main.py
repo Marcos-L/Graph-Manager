@@ -1,12 +1,15 @@
-from  PyQt6.QtWidgets  import QApplication, QMainWindow, QFileDialog
-from  PyQt6.QtGui import QActionGroup
-from  PyQt6.uic  import  loadUi
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt6.QtGui import QActionGroup
+from PyQt6.uic  import  loadUi
 
 from  matplotlib.backends.backend_qtagg  import  ( NavigationToolbar2QT  as  NavigationToolbar )
+
+from Widgets.subWin import WinArc
 
 import os
 import json
 import pgraph
+import webbrowser
 #import  numpy  as  np 
 
 class  Main ( QMainWindow ):
@@ -19,16 +22,18 @@ class  Main ( QMainWindow ):
 
         loadUi ( "./UI_Files/MainWindow.ui" , self )
         
-        self.AppGroup =  QActionGroup(self)
+        self . AppGroup =  QActionGroup(self)
         
-        self.AppGroup.addAction(self.actionApp_1)
-        self.AppGroup.addAction(self.actionApp_2)
+        self . AppGroup.addAction(self.actionApp_1)
+        self . AppGroup.addAction(self.actionApp_2)
         
-        self.AppGroup.setExclusive(True)
+        self . AppGroup.setExclusive(True)
         
-        self.FileName = None
+        self . addToolBar ( NavigationToolbar ( self . MplWidget . canvas ,  self ))
         
-        self.FileDir = None
+        self . FileName = None
+        
+        self . FileDir = None
         
         self . actionAbrir . triggered . connect(self.OpenFile)
         
@@ -50,10 +55,21 @@ class  Main ( QMainWindow ):
         
         self . actionEjecucion . triggered . connect(self.AppRun)
         
-        self . addToolBar ( NavigationToolbar ( self . MplWidget . canvas ,  self ))
+        self . actionAgregar_2 . triggered . connect(lambda: self.Arc('Create'))
+        
+        self . actionEditar_2 . triggered . connect(lambda: self.Arc('Edit'))
+        
+        self . actionEliminar_2 . triggered . connect(lambda: self.Arc('Delete'))
+        
+        self . actionAyuda . triggered . connect(lambda: webbrowser.open(
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ', new=2))
+        
+        self . actionAcerca_de_Grafos . triggered . connect(lambda: webbrowser.open(
+            'https://github.com/Marcos-L/Graph-Manager', new=2))
         
     def OpenFile(self):
-        file = QFileDialog.getOpenFileName(filter='Extensible Markup Language (*.XML);;JavaScript Object Notation (*.json)')
+        file = QFileDialog.getOpenFileName(
+            filter='Extensible Markup Language (*.XML);;JavaScript Object Notation (*.json)')
         if file[0]:
             self.FileName = file[0]
             self.FileDir = file[1]
@@ -90,6 +106,11 @@ class  Main ( QMainWindow ):
     def AppRun(self):
         print(self.AppGroup.checkedAction().text())
         
+    def Arc(self, mode):
+        self.subWinArc = WinArc(self, mode)
+        
+        self.subWinArc.show()
+        
     def updateGraph(self):
         g = pgraph.UGraph()
         
@@ -112,4 +133,5 @@ class  Main ( QMainWindow ):
 app  =  QApplication ([]) 
 window  =  Main () 
 window . show () 
+
 app . exec ()
