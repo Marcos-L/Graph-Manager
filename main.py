@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PyQt6.QtGui import QActionGroup
 from PyQt6.uic  import  loadUi
 
@@ -10,7 +10,7 @@ import os
 import json
 import pgraph
 import webbrowser
-#import  numpy  as  np 
+import  numpy  as  np 
 
 class  Main ( QMainWindow ):
     def  __init__ ( self ):
@@ -34,6 +34,8 @@ class  Main ( QMainWindow ):
         self . FileName = None
         
         self . FileDir = None
+        
+        self . actionAleatorio . triggered . connect(self.NewRand)
         
         self . actionAbrir . triggered . connect(self.OpenFile)
         
@@ -69,7 +71,7 @@ class  Main ( QMainWindow ):
         
     def OpenFile(self):
         file = QFileDialog.getOpenFileName(
-            filter='Extensible Markup Language (*.XML);;JavaScript Object Notation (*.json)')
+            filter='JavaScript Object Notation (*.json);;Extensible Markup Language (*.XML)')
         if file[0]:
             self.FileName = file[0]
             self.FileDir = file[1]
@@ -103,29 +105,57 @@ class  Main ( QMainWindow ):
     def PrintPDF(self):
         print(os.name)
                 
+    def NewRand(self):
+        self.nodes = {}
+        self.arcs = []
+        j = np.random.randint(2,20)
+        for i in range(j):
+            self.nodes['N'+str(i)] = {'coordinates':
+                                       {'x':np.random.randint(0,100),
+                                        'y':np.random.randint(0,100)},
+                                      'type':'Object'
+                                       }
+        for i in range(j):
+            for h in range(np.random.randint(0,j-1)):
+                if h != i:
+                    self.arcs += [['N'+str(i),'N'+str(h),10]]
+        self.updateGraph()
+    
     def AppRun(self):
         print(self.AppGroup.checkedAction().text())
         
     def Arc(self, mode):
-        self.subWinArc = WinArc(self, mode)
+        if (hasattr(self,'subWinArc')):
+            msg = "Arc Manager already open."
+            q = QMessageBox()
+            q.setText(msg)
+            q.exec()
+        else:
+            if (hasattr(self,'nodes')):
+                self.subWinArc = WinArc(self, mode)
+                self.subWinArc.show()
+                
+                
+            else:
+                msg = "Can't open Arc Manager without nodes."
+                q = QMessageBox()
+                q.setText(msg)
+                q.exec()
         
-        self.subWinArc.show()
         
     def updateGraph(self):
         g = pgraph.UGraph()
         
         for name, info in self.nodes.items():
-            g.add_vertex(name=name, coord=info["utm"])
+            g.add_vertex(name=name, coord=(info['coordinates']['x'],info['coordinates']['y']))
         
         for route in self.arcs:
             g.add_edge(route[0], route[1], cost=route[2])
         
-        p = g.path_Astar('Hughenden', 'Brisbane')
         self . MplWidget . canvas . figure . clear()
         
         a = self . MplWidget . canvas . figure . add_subplot (111)
-        g.plot(block=False, subplot=a) # plot it
-        g.highlight_path(p,subplot=a)  # overlay the path
+        g.plot(block=False, subplot=a)
 
         self . MplWidget . canvas . figure . tight_layout ()
         self . MplWidget . canvas . draw ()
