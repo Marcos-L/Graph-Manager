@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QComboBox, QLineEdit, QPushButton, QLabel, QDoubleSpinBox
 from PyQt6.uic  import  loadUi
 
 import numpy as np
@@ -87,5 +87,76 @@ class WinArc(QWidget):
                 
         self.pushCancel.clicked.connect(lambda: self.close())
         
+class WinNode(QWidget):
+    def closeEvent(self, event):
+        delattr(self.parent,'subWinNode')
+    
+    def addAtt(self):
+        Num = self.AttNum
+        row = self.gridLayout.rowCount()
+        DTypes = ['Int', 'Float32', 'String']
+        self.Att += [[QLineEdit("Attribute Name"),
+                     QComboBox(),
+                     QLineEdit(),
+                     QPushButton('Delete')]]
+        self.Att[-1][1].addItems(DTypes)
+        for i,j in zip(self.Att[-1],range(4)):
+            self.gridLayout.addWidget(i,row,j)
+            
+        self.Att[-1][3].row = Num
+        self.Att[-1][3].clicked.connect(self.delAtt)
         
+        self.AttNum += 1
+        
+    def delAtt(self):
+        self.AttNum -= 1
+        Num = self.sender().row
+        for i in range(4):
+            self.gridLayout.removeWidget(self.Att[Num][i])
+        self.Att.pop(Num)
+        for i in range(Num,self.AttNum):
+            self.Att[i][3].row -= 1
+        
+        
+    def  __init__ ( self , parent, mode='Create'):
+        QWidget . __init__ ( self )
+
+        loadUi ( "./UI_Files/New_Node.ui" , self )
+        
+        self.Att = []
+        
+        self.AttNum = 0
+        
+        self.parent = parent
+        
+        self.setParent(parent)
+    
+        self.setWindowFlags(Qt.WindowType.Window|Qt.WindowType.WindowStaysOnTopHint)
+        
+        match mode:
+            case 'Create':
+                self.gridLayout.addWidget(QLabel("X Coordinate"),
+                                          0,0)
+                self.gridLayout.addWidget(QLabel("Y Coordinate"),
+                                          1,0)
+                self.gridLayout.addWidget(QDoubleSpinBox(),
+                                          0,1,1,3)
+                self.gridLayout.addWidget(QDoubleSpinBox(),
+                                          1,1,1,3)
+                self.gridLayout.setColumnStretch(2,15)
+            case 'Edit':
+                print('Golo')
+                
+            case 'Delete':
+                print('Showlo')
+                
+        self.pushAdd.clicked.connect(self.addAtt)
+        
+        self.pushAccept.clicked.connect(lambda: print(self.gridLayout.rowCount()))
+        
+        self.pushCancel.clicked.connect(lambda: self.close())
+        
+        
+ 
+     
  

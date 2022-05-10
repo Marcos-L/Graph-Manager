@@ -4,7 +4,7 @@ from PyQt6.uic  import  loadUi
 
 from  matplotlib.backends.backend_qtagg  import  ( NavigationToolbar2QT  as  NavigationToolbar )
 
-from Widgets.subWin import WinArc
+from Widgets.subWin import WinArc, WinNode
 
 import os
 import json
@@ -56,6 +56,8 @@ class  Main ( QMainWindow ):
         self . actionCerrar . triggered . connect(self.close)
         
         self . actionEjecucion . triggered . connect(self.AppRun)
+        
+        self . actionAgregar . triggered . connect(lambda: self.Node('Create'))
         
         self . actionAgregar_2 . triggered . connect(lambda: self.Arc('Create'))
         
@@ -142,6 +144,16 @@ class  Main ( QMainWindow ):
                 q.setText(msg)
                 q.exec()
         
+    def Node(self, mode):
+        if (hasattr(self,'subWinNode')):
+            msg = "Node Manager already open."
+            q = QMessageBox()
+            q.setText(msg)
+            q.exec()
+        else:
+            self.subWinNode = WinNode(self, mode)
+            self.subWinNode.show()
+
         
     def updateGraph(self):
         g = pgraph.UGraph()
