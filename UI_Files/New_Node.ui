@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewArc</class>
- <widget class="QWidget" name="NewArc">
+ <class>NewNode</class>
+ <widget class="QWidget" name="NewNode">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -75,7 +75,7 @@
           <number>0</number>
          </property>
          <property name="horizontalSpacing">
-          <number>0</number>
+          <number>5</number>
          </property>
         </layout>
        </item>
@@ -85,6 +85,9 @@
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::MinimumExpanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -117,13 +120,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushAdd">
-         <property name="text">
-          <string>Add Attribute</string>
-         </property>
-        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushAccept">
