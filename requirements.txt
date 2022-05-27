@@ -1,4 +1,3 @@
 numpy
 matplotlib
 pyqt6
-pgraph-python
