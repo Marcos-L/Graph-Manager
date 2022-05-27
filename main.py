@@ -1,14 +1,15 @@
+from PyQt6.QtCore import Qt, QEventLoop
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PyQt6.QtGui import QActionGroup
 from PyQt6.uic  import  loadUi
 
 from  matplotlib.backends.backend_qtagg  import  ( NavigationToolbar2QT  as  NavigationToolbar )
 
-from Widgets.subWin import WinArc
+from Widgets.subWin import WinArc, WinNode, WinGraph
 
 import os
 import json
-import pgraph
+import PGraph as pgraph
 import webbrowser
 import  numpy  as  np 
 
@@ -35,9 +36,13 @@ class  Main ( QMainWindow ):
         
         self . FileDir = None
         
+        self . actionPersonalizado . triggered . connect(self.NewGraph)
+        
         self . actionAleatorio . triggered . connect(self.NewRand)
         
         self . actionAbrir . triggered . connect(self.OpenFile)
+        
+        self . actionImportar_Datos . triggered . connect(self.OpenFile)
         
         self . actionGuardar . triggered . connect(self.SaveFile)
 
@@ -57,11 +62,19 @@ class  Main ( QMainWindow ):
         
         self . actionEjecucion . triggered . connect(self.AppRun)
         
+        self . actionAgregar . triggered . connect(lambda: self.Node('Create'))
+        
+        self . actionEditar . triggered . connect(lambda: self.Node('Edit'))
+        
+        self . actionEliminar . triggered . connect(lambda: self.Node('Delete'))
+        
         self . actionAgregar_2 . triggered . connect(lambda: self.Arc('Create'))
         
         self . actionEditar_2 . triggered . connect(lambda: self.Arc('Edit'))
         
         self . actionEliminar_2 . triggered . connect(lambda: self.Arc('Delete'))
+        
+        self . actionCerrar . triggered . connect(self.close)
         
         self . actionAyuda . triggered . connect(lambda: webbrowser.open(
             'https://www.youtube.com/watch?v=dQw4w9WgXcQ', new=2))
@@ -71,43 +84,71 @@ class  Main ( QMainWindow ):
         
     def OpenFile(self):
         file = QFileDialog.getOpenFileName(
-            filter='JavaScript Object Notation (*.json);;Extensible Markup Language (*.XML)')
+            filter='JavaScript Object Notation(*.json);;Extensible Markup Language (*.XML)')
         if file[0]:
             self.FileName = file[0]
-            self.FileDir = file[1]
-            f = json.loads(open(file[1][35:]+file[0], 'r').read())
+            self.FileDir = file[1][34:]
+            self.type = 1
+            f = json.loads(open(file[1][34:]+file[0], 'r').read())
             self.nodes = f['Nodes']
             self.arcs = f['Arcs']
             self.updateGraph()
             
     def SaveFile(self):
         if self.FileName:
-            print('Saved')
+            Graph = {'Nodes': self.nodes,
+                     'Arcs': self.arcs}
+            json_object = json.dumps(Graph, indent = 4)
+  
+            with open(self.FileDir+self.FileName+'.json', "w") as outfile:
+                outfile.write(json_object)
         else:
             self.SaveFileAs()
             
     def SaveFileAs(self):
-        file = QFileDialog.getSaveFileName(filter='Extensible Markup Language (*.XML);;JavaScript Object Notation (*.json)')
+        file = QFileDialog.getSaveFileName(filter='Extensible Markup Language (*.XML);;JavaScript Object Notation(*.json)')
         if file[0]:
-            print('Saved')
             self.FileName = file[0]
-            self.FileDir = file[1]
+            self.FileDir = file[1][34:]
+            Graph = {'Nodes': self.nodes,
+                     'Arcs': self.arcs}
+            json_object = json.dumps(Graph, indent = 4)
+  
+            with open(self.FileDir+self.FileName+'.json', "w") as outfile:
+                outfile.write(json_object)
         
     def Export(self, FileType):
         match FileType:
             case 0:
                 print('Excel')
             case 1:
-                print('Imagen')
+                file = QFileDialog.getSaveFileName()
+                if file[0]:
+                    self.MplWidget.canvas.figure.savefig(file[1][13:]+file[0]+'.png',dpi=150)
             case 2:
-                print('PDF')
+                file = QFileDialog.getSaveFileName()
+                if file[0]:
+                    self.MplWidget.canvas.figure.savefig(file[1][13:]+file[0]+'.pdf',dpi=150)
                 
     def PrintPDF(self):
         print(os.name)
                 
+    def NewGraph(self):
+        self.nodes = {}
+        self.arcs = []
+        if (hasattr(self,'subWinGraph')):
+            msg = "Graph maker already open."
+            q = QMessageBox()
+            q.setText(msg)
+            q.exec()
+        else:
+            self.subWinGraph = WinGraph(self)
+            self.subWinGraph.show()
+            
     def NewRand(self):
         self.nodes = {}
         self.arcs = []
+        self.AttNum = 0
         j = np.random.randint(2,20)
         for i in range(j):
             self.nodes['N'+str(i)] = {'coordinates':
@@ -125,23 +166,34 @@ class  Main ( QMainWindow ):
         print(self.AppGroup.checkedAction().text())
         
     def Arc(self, mode):
-        if (hasattr(self,'subWinArc')):
+        if not hasattr(self,'subWinNode'):
+            self.subWinArc = WinArc(self, mode)
+            self.subWinArc.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+            self.subWinArc.show()
+            loop = QEventLoop()
+            self.subWinArc.destroyed.connect(loop.quit)
+            loop.exec()
+            delattr(self,'subWinArc')
+        else:
             msg = "Arc Manager already open."
             q = QMessageBox()
             q.setText(msg)
             q.exec()
-        else:
-            if (hasattr(self,'nodes')):
-                self.subWinArc = WinArc(self, mode)
-                self.subWinArc.show()
-                
-                
-            else:
-                msg = "Can't open Arc Manager without nodes."
-                q = QMessageBox()
-                q.setText(msg)
-                q.exec()
         
+    def Node(self, mode):
+        if not hasattr(self,'subWinNode'):
+            self.subWinNode = WinNode(self, mode, self.AttNum)
+            self.subWinNode.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+            self.subWinNode.show()
+            loop = QEventLoop()
+            self.subWinNode.destroyed.connect(loop.quit)
+            loop.exec()
+            delattr(self,'subWinNode')
+        else:
+            msg = "Node Manager already open."
+            q = QMessageBox()
+            q.setText(msg)
+            q.exec()
         
     def updateGraph(self):
         g = pgraph.UGraph()
