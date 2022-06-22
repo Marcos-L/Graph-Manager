@@ -9,7 +9,8 @@ from Widgets.subWin import WinArc, WinNode, WinGraph
 
 import os
 import json
-import PGraph as pgraph
+from Tools import PGraph as pgraph
+from Tools import GraphTools as gt
 import webbrowser
 import  numpy  as  np 
 
