@@ -55,7 +55,7 @@ class  Main ( QMainWindow ):
         
         self . actionPDF . triggered . connect(lambda: self.Export(2))
         
-        self . actionA_1 . triggered . connect(lambda: print('Algorithm1'))
+        #self . actionA_1 . triggered . connect(lambda: print('Algorithm1'))
         
         self . actionImprimir . triggered . connect(self.PrintPDF)
         
@@ -93,6 +93,7 @@ class  Main ( QMainWindow ):
             f = json.loads(open(file[1][34:]+file[0], 'r').read())
             self.nodes = f['Nodes']
             self.arcs = f['Arcs']
+            self.AttNum = int(len(self.nodes.items())/len(self.nodes.keys())-1)
             self.updateGraph()
             
     def SaveFile(self):
@@ -150,13 +151,19 @@ class  Main ( QMainWindow ):
         self.nodes = {}
         self.arcs = []
         self.AttNum = 0
-        j = np.random.randint(2,20)
-        for i in range(j):
-            self.nodes['N'+str(i)] = {'coordinates':
-                                       {'x':np.random.randint(0,100),
-                                        'y':np.random.randint(0,100)},
-                                      'type':'Object'
-                                       }
+        if (hasattr(self,'subWinGraph')):
+            msg = "Graph maker already open."
+            q = QMessageBox()
+            q.setText(msg)
+            q.exec()
+        else:
+            j = np.random.randint(2,10)
+            for i in range(j):
+                self.nodes['N'+str(i)] = {'coordinates':
+                                        {'x':np.random.randint(0,100),
+                                            'y':np.random.randint(0,100)},
+                                        'type':'Object'
+                                        }
         for i in range(j):
             for h in range(np.random.randint(0,j-1)):
                 if h != i:
@@ -164,8 +171,67 @@ class  Main ( QMainWindow ):
         self.updateGraph()
     
     def AppRun(self):
-        print(self.AppGroup.checkedAction().text())
+        g = pgraph.UGraph()
+
+        for name, info in self.nodes.items():
+            g.add_vertex(name=name, coord=(info['coordinates']['x'],info['coordinates']['y']))
         
+        for route in self.arcs:
+            g.add_edge(route[0], route[1], cost=route[2])
+
+        file = QFileDialog.getOpenFileName(
+                filter='Numpy Array(*.npy)')
+                
+        if file[0]:
+            self.FileName = file[0]
+            self.FileDir = file[1][18:]
+            self.type = 1
+            tpm = np.load(file[1][18:]+file[0])
+            CM = gt.CMatrix(self.nodes, self.arcs)
+        match self.AppGroup.checkedAction().text():
+            case 'Pyphi Effect':
+                mip = gt.effmip(CM,tpm[1:,:],self.nodes,tuple(tpm[0,:]))
+                keys = tuple(self.nodes.keys())
+                msg = 'Pyphi Effect MIP\nphi ='+str(mip.phi)+'\nPartition 1:\n'
+                flag = 1
+                for i in mip.partition.parts:
+                    for j in i.purview:
+                        msg += keys[j]+'\n'
+                        if flag:
+                            g.add_vertex(name=keys[j], coord=(self.nodes[keys[j]]['coordinates']['x'],
+                                                              self.nodes[keys[j]]['coordinates']['y']))
+                    msg += 'Partition 2:\n'
+                    flag = 0
+                q = QMessageBox()
+                q.setText(msg[:-13])
+                q.exec()
+                
+            case 'Pyphi Cause':
+                mip = gt.caumip(CM,tpm[1:,:],self.nodes,tpm[0,:])
+                keys = tuple(self.nodes.keys())
+                msg = msg = 'Pyphi Cause MIP\nphi ='+str(mip.phi)+'\nPartition 1:\n'
+                flag = 1
+                for i in mip.partition.parts:
+                    for j in i.purview:
+                        msg += keys[j]+'\n'
+                        if flag:
+                            g.add_vertex(name=keys[j], coord=(self.nodes[keys[j]]['coordinates']['x'],
+                                                              self.nodes[keys[j]]['coordinates']['y']))
+                    msg += 'Partition 2:\n'
+                    flag = 0
+                q = QMessageBox()
+                q.setText(msg[:-13])
+                q.exec()
+        
+        self . MplWidget . canvas . figure . clear()
+        
+        
+        a = self . MplWidget . canvas . figure . add_subplot (111)
+        g.plot(block=False, subplot=a)
+
+        self . MplWidget . canvas . figure . tight_layout ()
+        self . MplWidget . canvas . draw ()
+
     def Arc(self, mode):
         if not hasattr(self,'subWinNode'):
             self.subWinArc = WinArc(self, mode)

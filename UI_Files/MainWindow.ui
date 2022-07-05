@@ -301,7 +301,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aplicación 1</string>
+    <string>Pyphi Effect</string>
    </property>
   </action>
   <action name="actionApp_2">
@@ -309,7 +309,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aplicación 2</string>
+    <string>Pyphi Cause</string>
    </property>
   </action>
   <action name="actionGrafica">

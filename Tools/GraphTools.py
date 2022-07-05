@@ -38,3 +38,19 @@ def CMatrix(nodes, arcs):
             if i[0] == keys[j]:
                 CM[j,keys.index(i[1])] = 1
     return CM
+
+def effmip(CM, tpm, nodes, state):
+    labels = tuple(nodes.keys())
+    network = phi.Network(tpm, CM, labels)
+    subsys = phi.Subsystem(network, state, labels)
+    indices = subsys.node_indices
+    mip = subsys.effect_mip(indices, indices)
+    return mip
+
+def caumip(CM, tpm, nodes, state):
+    labels = tuple(nodes.keys())
+    network = phi.Network(tpm, CM, labels)
+    subsys = phi.Subsystem(network, state, labels)
+    indices = subsys.node_indices
+    mip = subsys.cause_mip(indices, indices)
+    return mip
