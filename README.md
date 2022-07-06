@@ -18,6 +18,6 @@ Graph-Manager is a software designer to allow the user to make, edit, and analyz
  - Pyphi (@Develop)
 ### Other
  - Architecture: x86-64
- 
- 
+
+
  *Under development
