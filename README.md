@@ -1,5 +1,5 @@
 # Graph-Manager
-##About
+## About
 Graph-Manager is a software designer to allow the user to make, edit, and analyze graphs through the use of a GUI.
 ## Features
  - Make custom graphs or generate random ones
