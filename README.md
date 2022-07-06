@@ -9,8 +9,8 @@ Graph-Manager is a software designer to allow the user to make, edit, and analyz
 ## Requirements
 ### Software
  - Python 3.10+
- - OS: Manjaro Linux
- - Kernel: Linux 5.4.188-1-MANJARO
+ - OS: Manjaro Linux                   
+ - Kernel: Linux 5.4.188-1-MANJARO 
 ### Libriaries
  - PyQT6
  - Numpy
@@ -21,4 +21,3 @@ Graph-Manager is a software designer to allow the user to make, edit, and analyz
 
 
  *Under development
-
