@@ -1,5 +1,6 @@
 import pyphi as phi
 import numpy as np
+import time
 
 def CMatrix(nodes, arcs):
     '''
@@ -40,17 +41,23 @@ def CMatrix(nodes, arcs):
     return CM
 
 def effmip(CM, tpm, nodes, state):
+    #t0 = time.get_clock_info()
     labels = tuple(nodes.keys())
     network = phi.Network(tpm, CM, labels)
     subsys = phi.Subsystem(network, state, labels)
     indices = subsys.node_indices
-    mip = subsys.effect_mip(indices, indices)
+    mip = subsys.effect_mip(indices[:-1], indices)
+    #t1 = time.get_clock_info()
+    #print(t1-t0)
     return mip
 
 def caumip(CM, tpm, nodes, state):
+    #t0 = time.get_clock_info()
     labels = tuple(nodes.keys())
     network = phi.Network(tpm, CM, labels)
     subsys = phi.Subsystem(network, state, labels)
     indices = subsys.node_indices
-    mip = subsys.cause_mip(indices, indices)
+    mip = subsys.cause_mip(indices[:-1], indices)
+    #t1 = time.get_clock_info()
+    #print(t1-t0)
     return mip

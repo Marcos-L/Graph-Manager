@@ -114,6 +114,7 @@
     </property>
     <addaction name="actionApp_1"/>
     <addaction name="actionApp_2"/>
+    <addaction name="actionQueyanne"/>
    </widget>
    <widget class="QMenu" name="menuVentana">
     <property name="title">
@@ -330,6 +331,14 @@
   <action name="actionAcerca_de_Grafos">
    <property name="text">
     <string>Acerca de Grafos</string>
+   </property>
+  </action>
+  <action name="actionQueyanne">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Queyanne</string>
    </property>
   </action>
  </widget>
